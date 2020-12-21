@@ -7,10 +7,6 @@ app.get("/", function(req, res) {
   res.send("Hello Wold");
 });
 
-"scripts": {
-  "start":"node server.js"
-}
-
 app.listen(PORT, function() {
   console.log("App listening on PORT " + PORT);
 });
