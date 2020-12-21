@@ -4,9 +4,9 @@ var app = express();
 var PORT = 3000
 
 app.get("/", function(req, res) {
-  res.send("Welcome to the Star Wars Page!");
+  res.send("Hello Wold");
 });
 
-app.get("/yoda", function(req, res) {
-  res.json(yoda);
+app.listen(PORT, function() {
+  console.log("App listening on PORT " + PORT);
 });
