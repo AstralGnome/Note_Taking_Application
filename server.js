@@ -3,7 +3,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-const {nanoid} = require("nanoid")
+const { nanoid } = require("nanoid");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -17,7 +17,7 @@ app.use(express.static("public"));
 app.get("/api/notes", function (req, res) {
   //Use the fs module to read the file
   const fileData = JSON.parse(fs.readFileSync("db/db.json", { encoding: "utf-8" }));
-  console.log(fileData);
+  // console.log(fileData);
 
   //Send the parsed data back to the client with res.json()
   res.json(fileData);
@@ -27,17 +27,20 @@ app.get("/api/notes", function (req, res) {
 app.post("/api/notes", function (req, res) {
   //Access POSTed data in req.body
   req.body.id = nanoid();
-  
+
   //Use the fs module to read the file
-  const fileData = JSON.parse(fs.readFileSync("db/db.json", { encoding: "utf-8" }));
-  
   //THEN parse the file contents with JSON.parse() to get th real data
+  const fileData = JSON.parse(fs.readFileSync("db/db.json", { encoding: "utf-8" }));
 
   //Push the req.body to the array list
+  fileData.push(req.body);
 
   //JSON.stringify the array list back into a JSON string
-
   //THEN save the contents back to the db.json file using the fs module
+  fs.writeFile("db/db.json", JSON.stringify(fileData), (err) => {
+    if (err) throw err;
+    console.log("success!");
+  });
 });
 
 app.delete("/api/notes/:id", function (req, res) {
@@ -72,5 +75,5 @@ app.get("*", function (req, res) {
 });
 
 app.listen(PORT, function () {
-  console.log("App listening on PORT " + PORT);
+  console.log("App listening on localhost:http://localhost:" + PORT);
 });
