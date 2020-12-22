@@ -25,7 +25,7 @@ app.get("/api/notes", function (req, res) {
 
 //POST creates NEW THINGS on the server
 app.post("/api/notes", function (req, res) {
-  //Access POSTed data in req.body
+  //Access user-POSTed data in req.body
   req.body.id = nanoid();
 
   //Use the fs module to read the file
@@ -39,17 +39,18 @@ app.post("/api/notes", function (req, res) {
   //THEN save the contents back to the db.json file using the fs module
   fs.writeFile("db/db.json", JSON.stringify(fileData), (err) => {
     if (err) throw err;
-    console.log("success!");
+    console.log("file has been written!");
   });
+  res.json(fileData);
 });
 
 app.delete("/api/notes/:id", function (req, res) {
-  //Access id from req.params.id for loop
+  //Access id from req.params.id
+  const deletedId = req.params.id;
 
   //Use the fs module to read the file
-  fs.readFile("db.json");
-
-  //THEN use .then and parse the file contents with JSON.parse() to get th real data
+  //THEN parse the file contents with JSON.parse() to get th real data
+  let fileData = JSON.parse(fs.readFileSync("db/db.json", { encoding: "utf-8" }));
 
   //Option A
   //Find the matching index using the Array.findIndex() method
@@ -58,9 +59,15 @@ app.delete("/api/notes/:id", function (req, res) {
   //Option B
   //Use the Array.filter method to filter out the matching element
   //Also this array is not defined. Use let.
-  myArray = myArray.filter((element) => element.id !== req.params.id);
+  fileData = fileData.filter((data) => data.id !== deletedId);
+  console.log("Item has been successfully deleted!!");
 
   //Return any type of success message. Property of value assigned true??
+  fs.writeFile("db/db.json", JSON.stringify(fileData), (err) => {
+    if (err) throw err;
+    console.log("file has been written!");
+  });
+  res.json(fileData);
 });
 
 app.get("/notes", function (req, res) {
