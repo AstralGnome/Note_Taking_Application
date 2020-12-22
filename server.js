@@ -1,7 +1,9 @@
 const express = require("express");
 // require fs module
 const fs = require("fs");
+const path = require("path");
 
+const {nanoid} = require("nanoid")
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -14,62 +16,59 @@ app.use(express.static("public"));
 //Common practice to register API routes before html routes
 app.get("/api/notes", function (req, res) {
   //Use the fs module to read the file
-  fs.readFile(__dirname, "db.json");
-
-  //THEN use .then and parse the file contents with JSON.parse() to get th real data
+  const fileData = JSON.parse(fs.readFileSync("db/db.json", { encoding: "utf-8" }));
+  console.log(fileData);
 
   //Send the parsed data back to the client with res.json()
+  res.json(fileData);
 });
 
 //POST creates NEW THINGS on the server
 app.post("/api/notes", function (req, res) {
   //Access POSTed data in req.body
-  req.body;
-
+  req.body.id = nanoid();
+  
   //Use the fs module to read the file
-  fs.readFile("db.json");
-
-  //THEN use .then and parse the file contents with JSON.parse() to get th real data
+  const fileData = JSON.parse(fs.readFileSync("db/db.json", { encoding: "utf-8" }));
+  
+  //THEN parse the file contents with JSON.parse() to get th real data
 
   //Push the req.body to the array list
 
   //JSON.stringify the array list back into a JSON string
 
   //THEN save the contents back to the db.json file using the fs module
-
 });
 
-app.delete("/api/notes/:id", function(req, res){
-
+app.delete("/api/notes/:id", function (req, res) {
   //Access id from req.params.id for loop
 
-   //Use the fs module to read the file
-   fs.readFile("db.json");
+  //Use the fs module to read the file
+  fs.readFile("db.json");
 
-   //THEN use .then and parse the file contents with JSON.parse() to get th real data
- 
-//Option A
+  //THEN use .then and parse the file contents with JSON.parse() to get th real data
+
+  //Option A
   //Find the matching index using the Array.findIndex() method
   //Remove target elements using the Array.splice() method
 
-//Option B
+  //Option B
   //Use the Array.filter method to filter out the matching element
   //Also this array is not defined. Use let.
-  myArray = myArray.filter(element => element.id !== req.params.id)
+  myArray = myArray.filter((element) => element.id !== req.params.id);
 
   //Return any type of success message. Property of value assigned true??
-
 });
 
 app.get("/notes", function (req, res) {
   //Return contents of notes.html
-  res.sendFile(path.join(__dirname, "notes.html" /** Reference 11.2 mini-project **/));
+  res.sendFile(path.join(__dirname, "public/notes.html" /** Reference 11.2 mini-project **/));
 });
 
 // Star route should always come last
 app.get("*", function (req, res) {
   //Return contents of index.html
-  res.sendFile(path.join(__dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
 app.listen(PORT, function () {
